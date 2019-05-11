@@ -23,8 +23,6 @@ Create EC2 instance on AWS using Ansible.
     boto            2.49.0
     boto3           1.9.145
     ```
-- Create an AMI and download the keypair.
-
 - Store AWS boto file with access and secret keys.
     ```bash
     cat ~/.boto
@@ -32,6 +30,9 @@ Create EC2 instance on AWS using Ansible.
     AWS_ACCESS_KEY_ID=<AWS_ACCESS_KEY_ID>
     AWS_SECRET_ACCESS_KEY=<AWS_SECRET_ACCESS_KEY>
     ```
+- Create an AMI and download the keypair.
+- Update **<ami_id>** and **<key_pair>** in - "group_vars/all.yml"
+
 Create AWS EC2 instance.
 ```bash
 $ ansible-playbook -vv create_ec2_instance.yml -i inventory/aws/hosts
