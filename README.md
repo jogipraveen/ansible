@@ -15,7 +15,9 @@ $ vagrant up
 ```
 
 ### Create EC2 instance
-- Pre req to create EC2 instance on AWS
+Create EC2 instance on AWS using Ansible.
+**Pre req**
+- Dependencies
     ```bash
     awscli          1.16.155
     boto            2.49.0
@@ -23,7 +25,7 @@ $ vagrant up
     ```
 - Create an AMI and download the keypair.
 
-- Create AWS boto file with access and secret keys.
+- Store AWS boto file with access and secret keys.
     ```bash
     cat ~/.boto
     [Credentials]
@@ -35,7 +37,7 @@ Create AWS EC2 instance.
 $ ansible-playbook -vv create_ec2_instance.yml -i inventory/aws/hosts
 ```
 
-Install required packages on the EC2 instance
+Install required packages on the EC2 instance.
 ```bash
-$ ansible-playbook -vv provision_jenkins_build_slave.yml -i inventory/aws/hosts -u ec2-user  --private-key=~/Downloads/new_key.pem
+$ ansible-playbook -vv provision_jenkins_build_slave.yml -i inventory/aws/hosts -u ec2-user  --private-key=<LOCATION_PRIVATE-KEY>
 ```
