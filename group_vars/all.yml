@@ -1,0 +1,29 @@
+ansible_version: 2.7.10
+pyyaml_version: 5.1
+pyvmomi_version: 6.7.1
+vmutils_version: 0.5.1
+go_version: 1.8.3
+vagrant_version: 2.0.2
+#docker_version: 1.13.1
+docker_version: 18.06.1ce-8.amzn2
+jre_version: 1.8.0
+jfrog_cli_version: 1.20.2
+jenkins_version: 2.89.3-1.1
+jenkins_master: jenkins-master:8443
+
+# Global AWS Variables
+aws_network_name: test_network
+region: us-east-2
+
+# Bastion Variables
+ami_id: "ami-04f4fbef849989d19"
+key_pair: "new_key"
+
+# VPC Variables
+vpc_cidr: 10.10.0.0/16
+public_subnet_cidr: 10.10.0.0/17
+public_subnet_az: us-east-2a
+private_subnet_1_cidr: 10.10.128.0/18
+private_subnet_1_az: us-east-2b
+private_subnet_2_cidr: 10.10.192.0/18
+private_subnet_2_az: us-east-2c

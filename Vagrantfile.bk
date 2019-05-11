@@ -1,0 +1,41 @@
+#ANSIBLE_ARGS='--extra-vars "JENKINS_SERVER=<JENKINS_SERVER_URL> "SECRET=<slave_secret>"' vagrant up
+#(JENKINS_SERVER_URL= <Jenkins master URL>, SECRET= <Jenkins slave JNLP secret> - you can use dummy values to test it locally)
+Vagrant.require_version ">= 2.2.0"
+
+require 'getoptlong'
+
+opts = GetoptLong.new(
+  [ '--JENKINS_SERVER', GetoptLong::OPTIONAL_ARGUMENT ],
+  [ '--SECRET', GetoptLong::OPTIONAL_ARGUMENT ]
+)
+
+jenkins_server=''
+secret=''
+
+opts.each do |opt, arg|
+  case opt
+    when '--JENKINS_SERVER'
+      jenkins_server=arg
+    when '--SECRET'
+      secret=arg
+  end
+end
+
+Vagrant.configure(2) do |config|
+  config.vm.provider 'virtualbox' do |vb|
+    vb.memory = 2048
+    vb.cpus = 2
+  end
+
+  config.vm.box = "centos/7"
+  config.ssh.insert_key = false
+  config.vm.provision "ansible" do |ansible|
+    ansible.verbose = "v"
+    ansible.extra_vars = {
+      JENKINS_SERVER: "#{jenkins_server}",
+      SECRET: "#{secret}"
+    }
+    #ansible.ask_vault_pass = true
+    ansible.playbook = "jenkins_build_server.yml"
+  end
+end

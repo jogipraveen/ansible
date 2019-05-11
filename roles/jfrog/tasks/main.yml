@@ -1,0 +1,11 @@
+---
+
+- name: Download Jfrog CLI
+  get_url:
+    url: "https://api.bintray.com/content/jfrog/jfrog-cli-go/{{ jfrog_cli_version }}/jfrog-cli-linux-amd64/jfrog?bt_package=jfrog-cli-linux-amd64"
+    dest: /usr/local/bin/
+    mode: 0755
+    remote_src: yes
+  become: yes
+  become_user: root
+

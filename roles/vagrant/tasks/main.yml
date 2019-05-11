@@ -1,0 +1,15 @@
+---
+- name: Download Vagrant
+  get_url:
+    url: "https://releases.hashicorp.com/vagrant/{{ vagrant_version }}/vagrant_{{ vagrant_version }}_x86_64.rpm"
+    dest: "/tmp/vagrant_{{ vagrant_version }}_x86_64.rpm"
+    mode: 0755
+
+- name: Install Vagrant
+  yum:
+    name: "/tmp/vagrant_{{ vagrant_version }}_x86_64.rpm"
+
+- name: Install Vagrant plugins
+  shell: |
+    vagrant plugin install vagrant-libvirt
+    vagrant plugin repair

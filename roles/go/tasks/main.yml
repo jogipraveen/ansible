@@ -1,0 +1,16 @@
+---
+
+- name: Install go
+  unarchive:
+    src: "https://storage.googleapis.com/golang/go{{ go_version }}.linux-amd64.tar.gz"
+    dest: /usr/local/
+    remote_src: yes
+
+- name: add /usr/local/go/bin/ to path
+  lineinfile:
+    dest: /etc/environment
+    state: present
+    backrefs: yes
+    regexp: 'PATH=(["]*)((?!.*?/usr/local/go/bin/).*?)(["]*)$'
+    line: 'PATH=\1\2:/usr/local/go/bin/\3'
+

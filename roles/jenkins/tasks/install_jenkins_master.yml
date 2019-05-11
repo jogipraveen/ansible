@@ -1,0 +1,55 @@
+- hosts: all
+  become: true
+  tasks:
+    - name: Install prereq
+      yum:
+        name:
+          - wget
+          - "jre-{{ jre_version }}-openjdk"
+
+    - name: Add Jenkins repository
+      get_url:
+        url: "https://pkg.jenkins.io/redhat-stable/jenkins.repo"
+        dest: /etc/yum.repos.d/jenkins.repo
+
+    - name: Add Jenkins repository key
+      rpm_key:
+        state: present
+        key: "https://pkg.jenkins.io/redhat-stable/jenkins.io.key"
+
+    - name: Install specific version of Jenkins
+      yum:
+        name: "jenkins-{{ jenkins_version }}"
+        state: present
+
+    - name: Add Jenkins user
+      user: name=jenkins group=users groups=wheel
+
+    - name: Make sure we have a 'wheel' group.
+      group:
+        name=wheel
+        state=present
+
+    - name: Allow wheel group to have passwordless sudo
+      lineinfile:
+        path: /etc/sudoers
+        state: present
+        regexp: '^%wheel'
+        line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+
+    - name: Add sudoers users to wheel group
+      user: name=jenkins groups=wheel append=yes state=present
+
+    - name: Disallow root SSH access
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: "^PermitRootLogin"
+        line: "PermitRootLogin no"
+        state: present
+      #notify: Restart ssh
+
+    - name: Start Jenkins and enable on reboot
+      service:
+        name: jenkins
+        state: started
+        enabled: yes

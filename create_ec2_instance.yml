@@ -1,0 +1,24 @@
+- hosts: local
+  connection: local
+  tasks:
+    - name: Include all .json and .jsn files in group_vars and all nested directories (2.3)
+      include_vars:
+        dir: group_vars
+        extensions: [yml]
+
+    - name: Ensure botocore and boto3 modules are installed
+      pip:
+        name: [ "boto3", "botocore"]
+        executable: pip3
+        extra_args:   "--user"
+        #extensions:
+        #  - yml
+    #- name: Include all .yml in group_vars and all nested directories (2.3)
+    #  include_vars:
+    #    dir: group_vars
+    #    name: 
+    #      all.yml
+
+  roles:
+    - vpc
+    - ec2

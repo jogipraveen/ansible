@@ -1,0 +1,35 @@
+---
+
+- name: Install Docker
+  yum:
+    name: "docker-{{ docker_version }}"
+    state: present
+  when: ansible_distribution == "Amazon"
+
+- name: Install Docker
+  yum:
+    name: "docker-1.13.1"
+    state: present
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red HatEnterprise Linux'
+
+#libselinux-python required for this module
+- name: Install libselinux-python to disable SELINUX on EC2 instance
+  yum:
+    name: libselinux-python
+    state: present
+  when: ansible_distribution == "Amazon"
+
+- name: Disble SELINUX
+  selinux:
+    state: disabled
+
+- name: Add Docker user
+  group:
+    name: docker
+    state: present
+
+- name: Start Docker and enable on reboot
+  service:
+    name: docker
+    state: started
+    enabled: yes

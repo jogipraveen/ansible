@@ -1,0 +1,44 @@
+- name: Upgrade pip
+  pip:
+    name: pip
+    executable: pip3.6
+    extra_args: --upgrade
+    state: forcereinstall
+
+- block:
+  - name: Install setuptools
+    pip:
+      name: setuptools
+      executable: /usr/local/bin/pip3.6
+      state: forcereinstall
+
+  - name: Install pyyaml
+    pip:
+      name: pyyaml
+      version: "{{ pyyaml_version }}"
+      executable: /usr/local/bin/pip3.6
+      extra_args: --ignore-installed
+      state: forcereinstall
+
+  - name: Install ansible
+    pip:
+      name: ansible
+      version: "{{ ansible_version }}"
+      executable: /usr/local/bin/pip3.6
+      state: forcereinstall
+
+  - name: Install pyvmomi
+    pip:
+      name: pyvmomi
+      executable: /usr/local/bin/pip3.6
+      version: "{{ pyvmomi_version }}"
+      state: forcereinstall
+
+  - name: Install vmutils
+    pip:
+      name: vmutils
+      executable: /usr/local/bin/pip3.6
+      version: "{{ vmutils_version }}"
+      state: forcereinstall
+  
+  become: true

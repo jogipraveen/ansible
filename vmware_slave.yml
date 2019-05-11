@@ -1,0 +1,22 @@
+---
+- hosts: all
+  gather_facts: false
+  connection: local
+
+  tasks:
+    - set_fact: server="{{ lookup('ini', 'server section=Credentials file=vmware_inventory.ini') }}"
+    - debug: msg="var is {{ server }} "
+
+    - name: Clone the template
+      vmware_guest:
+        hostname: "{{ server }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        validate_certs: "{{ validate_certs }}"
+        name: testvm_2
+        template: template-20171005.1-UbuntuTrusty-DS-19-NVMe
+        datacenter: "{{ datacenter }}"
+        folder: /
+        state: poweredon
+        cluster: "{{ cluster_name }}"
+        wait_for_ip_address: yes

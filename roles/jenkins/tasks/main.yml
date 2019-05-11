@@ -1,0 +1,86 @@
+- name: Make sure we have a 'wheel' group
+  group:
+    name: wheel
+    state: present
+
+- name: Ensure jenkins group exists
+  group:
+    name: jenkins
+    state: present
+
+- name: Add Jenkins user
+  user:
+    name: jenkins
+    group: jenkins
+    state: present
+
+- name: update sudoers file
+  lineinfile:
+    path: /etc/sudoers
+    line: '{{ item }}'
+  with_items:
+    - '%wheel        ALL=(ALL)       NOPASSWD: ALL'
+    - 'Defaults   visiblepw'
+    - 'Defaults    !requiretty'
+
+- name: Add jenkins user to wheel group
+  user:
+    name: jenkins
+    groups: wheel
+    append: yes
+
+- name: Ensure /opt/jenkins directory exists
+  file:
+    path: /opt/jenkins
+    mode: 0755
+    owner: jenkins
+    group: wheel
+    state: directory
+
+#- name: Make time sync with Jenkins master
+#  template:
+#    src: "chrony.j2"
+#    dest: "/etc/chrony.conf"
+#    owner: "root"
+#    group: "root"
+#    mode: 0755
+
+- block:
+  - name: Ensure .ssh directory exists
+    file:
+      path: ~/.ssh
+      mode: 0700
+      owner: jenkins
+      state: directory
+
+  #- name: Install ssh key
+  #  copy:
+  #    src: ../files/id_rsa
+  #    dest: ~/.ssh/id_rsa
+  #    mode: 0600
+  #    owner: jenkins
+
+  #- name: Install ssh pub key
+  #  copy:
+  #    src: ../files/id_rsa.pub
+  #    dest: ~/.ssh/id_rsa.pub
+  #    mode: 0644
+  #    owner: jenkins
+
+  - name: Ensure /home/jenkins/workspace/ directory exists
+    file:
+      path: /home/jenkins/workspace/
+      owner: jenkins
+      group: jenkins
+      state: directory
+
+ # - name: copy sdnrad.creds
+ #   copy:
+  #    src: ../files/sdnrad.creds
+  #    dest: ~/sdnrad.creds
+  #    mode: 0644
+  #    owner: jenkins
+  #    group: jenkins
+
+  become: yes
+  become_user: jenkins

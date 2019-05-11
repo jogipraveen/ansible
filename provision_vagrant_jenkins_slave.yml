@@ -1,0 +1,68 @@
+- hosts: all
+  become: true
+  roles:
+    - common
+    - jenkins
+    - pip
+    - docker
+    - vagrant
+  tasks:
+    #- name: Include all .yml in group_vars and all nested directories (2.3)
+    #  include_vars:
+    #    dir: group_vars
+    #    name: all.yml
+     - name: Install required packages for vagrant
+       yum:
+         name:
+           - bridge-utils
+           - htop
+           - kernel-devel
+           - libffi-devel
+           - libvirt
+           - libvirt-devel
+           - libxml2-devel
+           - make
+           - patch
+           - python36-devel
+           - qemu
+           - qemu-kvm
+           - ruby-devel
+         state: present
+
+     - name: upgrade all packages
+       yum:
+         name: '*'
+         state: latest
+
+     - name: Ensure /opt/jenkins directory exists
+       file:
+         path: /opt/jenkins
+         mode: 0755
+         owner: jenkins
+         group: wheel
+         state: directory
+
+     - name: Start libvirt
+       service:
+         name: libvirtd
+         state: started
+         enabled: yes
+
+     - name: Change /var/lib/libvirt/images/ permissions
+       file:
+         path: /var/lib/libvirt/images/
+         owner: jenkins
+    
+     - name: Update Jenkins user group
+       user:
+         name: jenkins
+         groups: "jenkins, wheel, libvirt"
+         state: present
+
+     #- name: Setup jenkins-slave service
+     #  template:
+     #    src: roles/jenkins/templates/jenkins-slave.service.j2
+     #    path: /etc/systemd/system/jenkins-slave.service
+
+     #- name: Start jenkins service
+     #  import_tasks: roles/jenkins/tasks/jenkins-service.yml

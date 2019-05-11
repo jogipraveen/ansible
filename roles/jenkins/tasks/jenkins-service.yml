@@ -1,0 +1,17 @@
+- block:
+    - name: Download slave.jar
+      get_url:
+        url: "https://{{ jenkins_master }}/jenkins/jnlpJars/slave.jar"
+        path: /opt/jenkins/slave.jar
+        owner: jenkins
+        group: wheel
+
+    - name: Start jenkins-slave and enable on reboot as root
+      service:
+        name: jenkins-slave
+        enabled: yes
+        state: started
+
+  become: yes
+  become_method: sudo
+  become_user: root

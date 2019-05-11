@@ -1,0 +1,20 @@
+- hosts: all
+  become: true
+  roles:
+    - common
+    - jenkins
+    - pip
+    - go
+    - docker
+    - jfrog
+
+    #- name: Setup jenkins-slave service
+    #  template:
+    #    src: roles/jenkins/templates/jenkins-slave.service.j2
+    #    path: /etc/systemd/system/jenkins-slave.service
+
+    #- name: Setup the jenkins service
+    #  import_tasks: roles/jenkins/tasks/jenkins-service.yml
+
+  #become: yes
+  #become_user: jenkins
