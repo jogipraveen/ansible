@@ -2,6 +2,7 @@
 - name: Add epel-release repo
   command: amazon-linux-extras install -y epel
   become: true
+  when: ansible_distribution == "Amazon" and ansible_distribution_major_version == "NA"
 
 #Add epel-release repo for CentOS
 - name: Add epel-release repo
