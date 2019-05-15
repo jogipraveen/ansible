@@ -15,7 +15,12 @@ jenkins_master: jenkins-master:8443
 aws_network_name: test_network
 region: us-east-2
 
-# Bastion Variables
+#Lambda function
+item:
+  name: sample-python-app
+  zip_file: sample-python-app.zip
+
+# EC2 - Bastion Variables
 ami_id: "ami-04f4fbef849989d19"
 key_pair: "new_key"
 

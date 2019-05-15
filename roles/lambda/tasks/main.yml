@@ -1,0 +1,44 @@
+# Get public subnet ID
+- name: "Get Public Subnet ID"
+  ec2_vpc_subnet_facts:
+    region: "{{ region }}"
+    filters:
+      "tag:Name": "{{ aws_network_name }}-public"
+  register: public_subnet
+
+# Get security group of public subnet
+- name: Get bastion SG ID
+  ec2_group_facts:
+    region: "{{ region }}"
+    filters:
+      group-name: "{{ aws_network_name }}-bastion"
+  register: bastion_sg
+
+# Create Lambda functions
+- name: looped creation
+  lambda:
+    description: Basic python application
+    name: '{{ item.name }}'
+    state: present
+    zip_file: '{{ item.zip_file }}'
+    runtime: 'python3.7'
+    role: 'arn:aws:iam::987654321012:role/lambda_basic_execution'
+    handler: 'hello_python.my_handler'
+    vpc_subnet_ids:
+    - "{{ public_subnet['subnets'][0]['id'] }}"
+    vpc_security_group_ids:
+    - "{{ bastion_sg['security_groups'][0]['group_id'] }}"
+    environment_variables: '{{ item.env_vars }}'
+    tags:
+      key1: 'value1'
+  with_items:
+    - name: HelloWorld
+      zip_file: hello-code.zip
+      env_vars:
+        key1: "first"
+        key2: "second"
+    - name: ByeBye
+      zip_file: bye-code.zip
+      env_vars:
+        key1: "1"
+        key2: "2"

@@ -5,22 +5,22 @@
     filters:
       "tag:Name": "{{ aws_network_name }}-public"
   register: public_subnet
- 
+
 - name: Subnet ID
   debug:
     var: public_subnet['subnets'][0]['id']
- 
+
 - name: Get bastion SG ID
   ec2_group_facts:
     region: "{{ region }}"
     filters:
       group-name: "{{ aws_network_name }}-bastion"
   register: bastion_sg
- 
+
 - name: Bastion SG ID
   debug:
     var: bastion_sg['security_groups'][0]['group_id']
- 
+
 - name: Create Bastion
   ec2:
     region: "{{ region }}"
@@ -40,9 +40,9 @@
     vpc_subnet_id: "{{ public_subnet['subnets'][0]['id'] }}"
     assign_public_ip: yes
   register: bastion_facts
- 
+
 - debug: "var=bastion_facts"
- 
+
 - name: Display Public IP
   debug:
     var: "bastion_facts['tagged_instances'][0]['public_ip']"
